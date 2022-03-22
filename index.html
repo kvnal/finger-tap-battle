@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finger Tap Battle |🤺</title>
+    <style>
+      body {
+        background-color: red;
+        height: 100vh;
+        margin: 0;
+      }
+      .container {
+        height: 50%;
+        width: 100%;
+        background-color: skyblue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container"></div>
+  </body>
+
+  <script>
+    const screenH = window.screen.availHeight;
+    const screenW = window.screen.availWidth;
+    const increment = 10;
+
+    let topPlayer = document.querySelector(".container");
+
+    //check winner
+    //stats display screen
+    //emoji finger relative
+    // invisible click area
+
+    const getTopPlayerScore = () => {
+      return parseFloat(window.getComputedStyle(topPlayer).height.match(/\d+/));
+    };
+
+    const setTopPlayerScore = (increment) => {
+      topPlayer.style.height = `${getTopPlayerScore() + increment}px`;
+    };
+
+    const checkWinner = () => {
+      if (getTopPlayerScore() >= screenH) console.log("Player Top winner!");
+      if (getTopPlayerScore() == 0) console.log("Player Bottom winner!");
+    };
+    //
+    top.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopImmediatePropagation()
+      event.stopPropagation()
+      setTopPlayerScore(increment);
+      checkWinner();
+      
+    });
+
+    window.document.body.addEventListener("click" ,(event)=>{
+        console.log("player 2 ");
+    })
+
+    const logStats = () => {
+      console.log("screen " + screenW + " x " + screenH);
+      console.log("Player top " + getTopPlayerScore());
+      console.log("Player bottom " + (screenH - getTopPlayerScore()));
+    };
+  </script>
+</html>
