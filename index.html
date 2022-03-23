@@ -7,32 +7,67 @@
     <title>Finger Tap Battle |🤺</title>
     <style>
       body {
-        background-color: red;
         height: 100vh;
         margin: 0;
+        /* overflow: hidden; */
       }
-      .container {
+      .playerBottom{
+        height: 100vh;
+        background-color: red
+      }
+      .playerTop {
+        position: absolute;
         height: 50%;
         width: 100%;
         background-color: skyblue;
       }
+
+      /* listner layers */
+      .layers{
+        opacity: 0.5;
+        width: 100%;
+        z-index: 100;
+        position: absolute;
+        height: 100vh;
+      }
+      .playerBottomLayer{
+        background-color: black;
+        height: 50%;
+      }
+      .playerTopLayer{
+        background-color: black;
+        height: 50%;
+      }
     </style>
   </head>
   <body>
-    <div class="container"></div>
+    <div class="layers">
+      <div class="playerTopLayer"></div>
+      <div class="playerBottomLayer"></div>
+    </div>
+    <div class="playerTop"></div>
+    <div class="playerBottom"></div>
+    
   </body>
 
   <script>
     const screenH = window.screen.availHeight;
     const screenW = window.screen.availWidth;
-    const increment = 10;
+    const increment = 50;
 
-    let topPlayer = document.querySelector(".container");
+    let topPlayer = document.querySelector(".playerTop");
+    let bottomPlayer = document.querySelector(".playerBottom");
 
+    let topPlayerLayer = document.querySelector(".playerTopLayer")
+    let bottomPlayerLayer = document.querySelector(".playerBottomLayer")
+    
+    
+    //click opacity 0 ,restart => game menu 
+    //rounds localstorage, reset 
     //check winner
     //stats display screen
     //emoji finger relative
-    // invisible click area
+    
 
     const getTopPlayerScore = () => {
       return parseFloat(window.getComputedStyle(topPlayer).height.match(/\d+/));
@@ -47,7 +82,8 @@
       if (getTopPlayerScore() == 0) console.log("Player Bottom winner!");
     };
     //
-    top.addEventListener("click", (event) => {
+    topPlayerLayer.addEventListener("click", (event) => {
+      console.log("top");
       event.preventDefault();
       event.stopImmediatePropagation()
       event.stopPropagation()
@@ -56,9 +92,10 @@
       
     });
 
-    window.document.body.addEventListener("click" ,(event)=>{
-        console.log("player 2 ");
-    })
+    bottomPlayerLayer.addEventListener("click" ,(event)=>{
+      console.log("btm");
+        setTopPlayerScore(-increment);
+      })
 
     const logStats = () => {
       console.log("screen " + screenW + " x " + screenH);
