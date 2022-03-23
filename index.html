@@ -9,7 +9,7 @@
       body {
         height: 100vh;
         margin: 0;
-        /* overflow: hidden; */
+        overflow: hidden;
       }
       .playerBottom{
         height: 100vh;
@@ -31,6 +31,7 @@
         height: 100vh;
       }
       .playerBottomLayer{
+        border-top: 4px white dashed;
         background-color: black;
         height: 50%;
       }
@@ -62,8 +63,8 @@
     let bottomPlayerLayer = document.querySelector(".playerBottomLayer")
     
     
-    //click opacity 0 ,restart => game menu 
-    //rounds localstorage, reset 
+    //click opacity 0 ,restart , mode (L,M,D) increments => game menu 
+    //rounds localstorage, reset , increments
     //check winner
     //stats display screen
     //emoji finger relative
@@ -74,7 +75,8 @@
     };
 
     const setTopPlayerScore = (increment) => {
-      topPlayer.style.height = `${getTopPlayerScore() + increment}px`;
+      
+      topPlayer.style.height = getTopPlayerScore() + increment >0 ? `${getTopPlayerScore() + increment}px`: "0px";
     };
 
     const checkWinner = () => {
@@ -83,7 +85,6 @@
     };
     //
     topPlayerLayer.addEventListener("click", (event) => {
-      console.log("top");
       event.preventDefault();
       event.stopImmediatePropagation()
       event.stopPropagation()
@@ -93,7 +94,6 @@
     });
 
     bottomPlayerLayer.addEventListener("click" ,(event)=>{
-      console.log("btm");
         setTopPlayerScore(-increment);
       })
 
