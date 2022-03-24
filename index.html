@@ -61,6 +61,7 @@
     const screenW = window.screen.availWidth;
 
     let increment;
+    let beginGame = false;
 
     let topPlayerScore;
     let bottomPlayerScore;
@@ -86,6 +87,10 @@
       return 0;
     };
 
+    const resetLayer = () =>{
+      return topPlayer.style.height='50%'
+    }
+
     const newGame = (reset = false) => {
       if (reset) {
         sessionStorage.clear();
@@ -107,7 +112,7 @@
 
         if (topWinner) stats["top"] += 1;
         else stats["bottom"] += 1;
-
+        
         return sessionStorage.setItem('stats',JSON.stringify(stats));
       }
       return 0;
@@ -134,16 +139,19 @@
         updateStatsScore(topWinner = false)
       }
     };
-    //
+  
     topPlayerLayer.addEventListener("click", (event) => {
       event.preventDefault();
-      event.stopImmediatePropagation();
-      event.stopPropagation();
+
+      if(!beginGame) updateStatsScore(topWinner=false)
+
       setTopPlayerScore(increment);
       checkWinner();
     });
 
     bottomPlayerLayer.addEventListener("click", (event) => {
+      if(!beginGame) updateStatsScore(topWinner=true)
+
       setTopPlayerScore(-increment);
       checkWinner();
     });
