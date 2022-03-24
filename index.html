@@ -11,9 +11,9 @@
         margin: 0;
         overflow: hidden;
       }
-      .playerBottom{
+      .playerBottom {
         height: 100vh;
-        background-color: red
+        background-color: red;
       }
       .playerTop {
         position: absolute;
@@ -23,19 +23,19 @@
       }
 
       /* listner layers */
-      .layers{
+      .layers {
         opacity: 0.5;
         width: 100%;
         z-index: 100;
         position: absolute;
         height: 100vh;
       }
-      .playerBottomLayer{
+      .playerBottomLayer {
         border-top: 4px white dashed;
         background-color: black;
         height: 50%;
       }
-      .playerTopLayer{
+      .playerTopLayer {
         background-color: black;
         height: 50%;
       }
@@ -48,59 +48,112 @@
     </div>
     <div class="playerTop"></div>
     <div class="playerBottom"></div>
-    
   </body>
 
   <script>
+    const newStats = {
+      top: 0,
+      bottom: 0,
+      increment: 50,
+    };
+
     const screenH = window.screen.availHeight;
     const screenW = window.screen.availWidth;
-    const increment = 50;
+
+    let increment;
+
+    let topPlayerScore;
+    let bottomPlayerScore;
 
     let topPlayer = document.querySelector(".playerTop");
     let bottomPlayer = document.querySelector(".playerBottom");
 
-    let topPlayerLayer = document.querySelector(".playerTopLayer")
-    let bottomPlayerLayer = document.querySelector(".playerBottomLayer")
-    
-    
-    //click opacity 0 ,restart , mode (L,M,D) increments => game menu 
-    //rounds localstorage, reset , increments
+    let topPlayerLayer = document.querySelector(".playerTopLayer");
+    let bottomPlayerLayer = document.querySelector(".playerBottomLayer");
+
+    //click opacity 0 ,restart , mode (L,M,D) increments => game menu
+    //rounds localstorage, reset , increments, timer 30s , count
     //check winner
     //stats display screen
     //emoji finger relative
-    
+    //countdown listner deactivate, penalty on early start
+
+    const getStats = () => {
+      if (sessionStorage.getItem("stats")) {
+        const stats = JSON.parse(sessionStorage.getItem("stats"));
+        return stats;
+      }
+      return 0;
+    };
+
+    const newGame = (reset = false) => {
+      if (reset) {
+        sessionStorage.clear();
+      }
+
+      if (getStats()) {
+        let stats = getStats()
+        topPlayerScore = stats["top"];
+        bottomPlayerScore = stats["bottom"];
+        increment = stats["increment"];
+      } else {
+        sessionStorage.setItem("stats", JSON.stringify(newStats));
+      }
+    };
+
+    const updateStatsScore = (topWinner) => {
+      if (getStats()) {
+        let stats = getStats()
+
+        if (topWinner) stats["top"] += 1;
+        else stats["bottom"] += 1;
+
+        return sessionStorage.setItem('stats',JSON.stringify(stats));
+      }
+      return 0;
+    };
 
     const getTopPlayerScore = () => {
       return parseFloat(window.getComputedStyle(topPlayer).height.match(/\d+/));
     };
 
     const setTopPlayerScore = (increment) => {
-      
-      topPlayer.style.height = getTopPlayerScore() + increment >0 ? `${getTopPlayerScore() + increment}px`: "0px";
+      topPlayer.style.height =
+        getTopPlayerScore() + increment > 0
+          ? `${getTopPlayerScore() + increment}px`
+          : "0px";
     };
 
     const checkWinner = () => {
-      if (getTopPlayerScore() >= screenH) console.log("Player Top winner!");
-      if (getTopPlayerScore() == 0) console.log("Player Bottom winner!");
+      if (getTopPlayerScore() >= screenH) {
+        console.log("Player Top winner!");
+        updateStatsScore(topWinner = true)
+      }
+      if (getTopPlayerScore() == 0) {
+        console.log("Player Bottom winner!");
+        updateStatsScore(topWinner = false)
+      }
     };
     //
     topPlayerLayer.addEventListener("click", (event) => {
       event.preventDefault();
-      event.stopImmediatePropagation()
-      event.stopPropagation()
+      event.stopImmediatePropagation();
+      event.stopPropagation();
       setTopPlayerScore(increment);
       checkWinner();
-      
     });
 
-    bottomPlayerLayer.addEventListener("click" ,(event)=>{
-        setTopPlayerScore(-increment);
-      })
+    bottomPlayerLayer.addEventListener("click", (event) => {
+      setTopPlayerScore(-increment);
+      checkWinner();
+    });
 
     const logStats = () => {
       console.log("screen " + screenW + " x " + screenH);
       console.log("Player top " + getTopPlayerScore());
       console.log("Player bottom " + (screenH - getTopPlayerScore()));
     };
+
+    newGame();
   </script>
 </html>
