@@ -7,9 +7,16 @@
     <title>Finger Tap Battle |🤺</title>
     <style>
       body {
+        font-family: monospace;
         height: 100vh;
         margin: 0;
         overflow: hidden;
+
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
       }
       .playerBottom {
         height: 100vh;
@@ -24,27 +31,57 @@
 
       /* listner layers */
       .layers {
-        opacity: 0.5;
+        opacity: 1;
+        /* background-color: black; */
         width: 100%;
         z-index: 100;
         position: absolute;
         height: 100vh;
       }
       .playerBottomLayer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border-top: 4px white dashed;
-        background-color: black;
         height: 50%;
       }
       .playerTopLayer {
-        background-color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         height: 50%;
+      }
+
+      .textlg {
+        width: 100%;
+        text-align: center;
+        font-size: 8em;
+        color: black;
+        -webkit-text-fill-color: white; /* Will override color (regardless of order) */
+        -webkit-text-stroke-width: 4px;
+        -webkit-text-stroke-color: black;
+      }
+
+      .strokeText {
+        color: black;
+        -webkit-text-fill-color: white; /* Will override color (regardless of order) */
+        -webkit-text-stroke-width: 2px;
+        -webkit-text-stroke-color: black;
+      }
+
+      .rotate180 {
+        transform: rotate(180deg);
       }
     </style>
   </head>
   <body>
     <div class="layers">
-      <div class="playerTopLayer"></div>
-      <div class="playerBottomLayer"></div>
+      <div class="playerTopLayer">
+        <span class="textlg" id="topPlayerScore">0</span>
+      </div>
+      <div class="playerBottomLayer">
+        <span class="textlg rotate180" id="bottomPlayerScore">0</span>
+      </div>
     </div>
     <div class="playerTop"></div>
     <div class="playerBottom"></div>
@@ -61,7 +98,7 @@
     const screenW = window.screen.availWidth;
 
     let increment;
-    let beginGame = false;
+    let beginGame = true;
 
     let topPlayerScore;
     let bottomPlayerScore;
@@ -72,7 +109,8 @@
     let topPlayerLayer = document.querySelector(".playerTopLayer");
     let bottomPlayerLayer = document.querySelector(".playerBottomLayer");
 
-    //click opacity 0 ,restart , mode (L,M,D) increments => game menu
+    //click opacity 0 ,restart , mode (L,M,D) increments => game
+    // dynamic increment 5%
     //rounds localstorage, reset , increments, timer 30s , count
     //check winner
     //stats display screen
@@ -87,17 +125,18 @@
       return 0;
     };
 
-    const resetLayer = () =>{
-      return topPlayer.style.height='50%'
-    }
+    const resetLayer = () => {
+      return (topPlayer.style.height = "50%");
+    };
 
     const newGame = (reset = false) => {
       if (reset) {
         sessionStorage.clear();
+        resetLayer();
       }
 
       if (getStats()) {
-        let stats = getStats()
+        let stats = getStats();
         topPlayerScore = stats["top"];
         bottomPlayerScore = stats["bottom"];
         increment = stats["increment"];
@@ -108,15 +147,22 @@
 
     const updateStatsScore = (topWinner) => {
       if (getStats()) {
-        let stats = getStats()
+        let stats = getStats();
 
         if (topWinner) stats["top"] += 1;
         else stats["bottom"] += 1;
-        
-        return sessionStorage.setItem('stats',JSON.stringify(stats));
+
+        updateStatsScoreUI(topPlayerScore = stats['top'] , bottomPlayerScore = stats['bottom']);
+
+        return sessionStorage.setItem("stats", JSON.stringify(stats));
       }
       return 0;
     };
+
+    const updateStatsScoreUI = (topPlayerScore, bottomPlayerScore) =>{
+        document.querySelector("#topPlayerScore").innerHTML = topPlayerScore
+        document.querySelector("#bottomPlayerScore").innerHTML = bottomPlayerScore
+    }
 
     const getTopPlayerScore = () => {
       return parseFloat(window.getComputedStyle(topPlayer).height.match(/\d+/));
@@ -132,25 +178,25 @@
     const checkWinner = () => {
       if (getTopPlayerScore() >= screenH) {
         console.log("Player Top winner!");
-        updateStatsScore(topWinner = true)
+        updateStatsScore((topWinner = true));
       }
       if (getTopPlayerScore() == 0) {
         console.log("Player Bottom winner!");
-        updateStatsScore(topWinner = false)
+        updateStatsScore((topWinner = false));
       }
     };
-  
+
     topPlayerLayer.addEventListener("click", (event) => {
       event.preventDefault();
 
-      if(!beginGame) updateStatsScore(topWinner=false)
+      if (!beginGame) updateStatsScore((topWinner = false));
 
       setTopPlayerScore(increment);
       checkWinner();
     });
 
     bottomPlayerLayer.addEventListener("click", (event) => {
-      if(!beginGame) updateStatsScore(topWinner=true)
+      if (!beginGame) updateStatsScore((topWinner = true));
 
       setTopPlayerScore(-increment);
       checkWinner();
