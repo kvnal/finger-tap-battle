@@ -91,17 +91,20 @@
     const newStats = {
       top: 0,
       bottom: 0,
-      increment: 50,
+      increment: 5 // percent of H
     };
 
-    const screenH = window.screen.availHeight;
-    const screenW = window.screen.availWidth;
+    const screenH = document.body.scrollHeight;
+    const screenW = document.body.scrollWidth;
 
     let increment;
     let beginGame = true;
 
     let topPlayerScore;
     let bottomPlayerScore;
+
+    let topPlayerTapCounts =0;
+    let bottomPlayerTapCounts =0;
 
     let topPlayer = document.querySelector(".playerTop");
     let bottomPlayer = document.querySelector(".playerBottom");
@@ -117,6 +120,9 @@
     //emoji finger relative
     //countdown listner deactivate, penalty on early start
 
+    const setDynmanicIncrement = (percentOfH = 5)=>{
+      newStats.increment =  screenH * percentOfH * 0.01;
+    }
     const getStats = () => {
       if (sessionStorage.getItem("stats")) {
         const stats = JSON.parse(sessionStorage.getItem("stats"));
@@ -126,6 +132,8 @@
     };
 
     const resetLayer = () => {
+      topPlayerTapCounts =0;
+      bottomPlayerTapCounts=0;
       return (topPlayer.style.height = "50%");
     };
 
@@ -154,7 +162,8 @@
 
         updateStatsScoreUI(topPlayerScore = stats['top'] , bottomPlayerScore = stats['bottom']);
 
-        return sessionStorage.setItem("stats", JSON.stringify(stats));
+        sessionStorage.setItem("stats", JSON.stringify(stats));
+        return resetLayer();
       }
       return 0;
     };
@@ -180,7 +189,8 @@
         console.log("Player Top winner!");
         updateStatsScore((topWinner = true));
       }
-      if (getTopPlayerScore() == 0) {
+      
+      if ((getTopPlayerScore() == 0 && (topPlayerTapCounts || bottomPlayerTapCounts))) {
         console.log("Player Bottom winner!");
         updateStatsScore((topWinner = false));
       }
@@ -188,9 +198,11 @@
 
     topPlayerLayer.addEventListener("click", (event) => {
       event.preventDefault();
+      event.stopPropagation();
 
       if (!beginGame) updateStatsScore((topWinner = false));
 
+      topPlayerTapCounts++;
       setTopPlayerScore(increment);
       checkWinner();
     });
@@ -198,6 +210,7 @@
     bottomPlayerLayer.addEventListener("click", (event) => {
       if (!beginGame) updateStatsScore((topWinner = true));
 
+      bottomPlayerTapCounts++;
       setTopPlayerScore(-increment);
       checkWinner();
     });
@@ -208,6 +221,7 @@
       console.log("Player bottom " + (screenH - getTopPlayerScore()));
     };
 
+    setDynmanicIncrement();
     newGame();
   </script>
 </html>
