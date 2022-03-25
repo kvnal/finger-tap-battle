@@ -147,9 +147,10 @@
         let stats = getStats();
         topPlayerScore = stats["top"];
         bottomPlayerScore = stats["bottom"];
-        increment = stats["increment"];
+        return increment = stats["increment"];
       } else {
         sessionStorage.setItem("stats", JSON.stringify(newStats));
+        return increment = newStats.increment;
       }
     };
 
