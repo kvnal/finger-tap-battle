@@ -72,9 +72,47 @@
       .rotate180 {
         transform: rotate(180deg);
       }
+
+      .menu{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        top: 45vh;
+        position: absolute;
+        z-index: 1000;
+        border: 0.5em solid black;
+        width: 100%;
+        background-color: white;
+        box-sizing: border-box;
+        padding-bottom: 2rem;
+      }
+
+      .menu h1{
+        font-size: 3rem;
+      }
+
+      .menu-controls button{
+        background-color: white;
+        border: 2px black solid;
+        box-shadow: 4px 4px black;
+      }
+      
+      .menu-controls button:hover {
+        box-shadow: 2px 2px black;
+      }
+      
     </style>
   </head>
   <body>
+
+    <div class="menu">
+      <h1 id="heading" class="">New Game</h2>
+      <div class="menu-controls">
+        <button onclick="startRound()">Next Round</button>
+        <button onclick="clearSession()">Reset</button>
+      </div>
+    </div>
     <div class="layers">
       <div class="playerTopLayer">
         <span class="textlg" id="topPlayerScore">0</span>
@@ -223,6 +261,15 @@
       console.log("Player top " + getTopPlayerScore());
       console.log("Player bottom " + (screenH - getTopPlayerScore()));
     };
+
+    const startRound = () =>{
+
+    }
+
+    const clearSession = () =>{
+      sessionStorage.clear()
+      return location.reload()
+    }
 
     setDynmanicIncrement();
     newGame();
