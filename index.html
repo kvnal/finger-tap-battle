@@ -101,6 +101,7 @@
 
       .menu-controls button{
         padding: 0.5em;
+        margin:0  0.5em 0 0.5em;
         font-weight: 600;
         font-size: 0.8em;
         background-color: white;
@@ -171,6 +172,12 @@
     //emoji finger relative
     //countdown listner deactivate, penalty on early start
 
+    const gameMenuVisiblity = (visible = true) =>{
+      if(visible)
+        return document.querySelector(".menubar-container").style.visibility = 'visible';
+      return document.querySelector(".menubar-container").style.visibility = 'hidden';
+    }
+    
     const setDynmanicIncrement = (percentOfH = 30)=>{
       newStats.increment =  screenH * percentOfH * 0.01;
     }
@@ -283,6 +290,7 @@
       sessionStorage.clear()
       return location.reload()
     }
+
 
     setDynmanicIncrement();
     newGame();
