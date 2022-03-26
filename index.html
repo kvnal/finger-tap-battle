@@ -230,6 +230,17 @@
       return menu.style.visibility = 'hidden';
     }
 
+    const gameMenuHeading = (text = "🤘 New Game 🤘" , color = "black") =>{
+      const heading = document.querySelector("#heading");
+      heading.innerHTML = text;
+      return heading.style.color = color;
+    }
+    
+    const gameMenuSubHeading = (text = "🤘 New Game 🤘" ) =>{
+      const heading = document.querySelector("#subHeading");
+      return heading.innerHTML = text;
+    }
+
     const startCountdown=()=>{
       let count = 30;
       const heading = document.querySelector("#timer")
