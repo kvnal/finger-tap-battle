@@ -117,13 +117,28 @@
         box-shadow: 2px 2px black;
       }
       
-      .timer{
+
+      .top50{
+        top: 50%;
+      }
+      .bottom50{
+        bottom: 50%;
+        color: black;
+      }
+
+      .timer-container{
+        width: 100%;
+        display: flex;
+        /* justify-content: center; */
         position: absolute;
-        z-index: 101;
-        width: 10%;
+        z-index: 100;
+        margin: auto;
+      }
+      .timer{
+        text-align: center;
         background-color: black;
         padding: 0 8px 0 8px;
-        text-align: center;
+
       }
       .timer span{
         color: white;
@@ -133,8 +148,16 @@
   </head>
   <body>
 
-    <div class="timer">
-      <span id="timer">60</span>
+    <div class="timer-container top50">
+      <div class="timer ">
+        <span id="timer">60</span>
+      </div>
+    </div>
+    <!-- player top timer -->
+    <div class="timer-container bottom50 rotate180">
+      <div class="timer ">
+        <span id="timer">60</span>
+      </div>
     </div>
     
     <div class="menu-container">
@@ -143,7 +166,7 @@
         <h1 id="heading" class="">🤘 New Game 🤘</h2>
           <span id="subHeading">red won by 10 taps / penalty for starting before time</span>
           <div class="menu-controls">
-            <button onclick="startRound()">👊 Next Round </button>
+            <button onclick="startRound()">👊 Play </button>
             <button onclick="clearSession()">🤝 Reset </button>
           </div>
         </div>
@@ -195,10 +218,16 @@
     //countdown listner deactivate, penalty on early start
     //alter rotate game menu (!winner) 
 
-    const gameMenuVisiblity = (visible = true) =>{
+    const gameMenu = (visible = true , topView180 = false) =>{
+      const menu =document.querySelector(".menu-container");
+      if(topView180)
+        menu.classList.add("rotate180");
+      else
+        menu.classList.remove("rotate180");
+
       if(visible)
-        return document.querySelector(".menubar-container").style.visibility = 'visible';
-      return document.querySelector(".menubar-container").style.visibility = 'hidden';
+        return menu.style.visibility = 'visible';
+      return menu.style.visibility = 'hidden';
     }
 
     const startCountdown=()=>{
@@ -291,6 +320,24 @@
       }
     };
 
+   
+    const logStats = () => {
+      console.log("screen " + screenW + " x " + screenH);
+      console.log("Player top " + getTopPlayerScore());
+      console.log("Player bottom " + (screenH - getTopPlayerScore()));
+    };
+
+    const startRound = () =>{
+
+    }
+
+    const clearSession = () =>{
+      sessionStorage.clear()
+      return location.reload()
+    }
+
+
+    // GAME
     topPlayerLayer.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -310,21 +357,6 @@
       setTopPlayerScore(-increment);
       checkWinner();}
     });
-
-    const logStats = () => {
-      console.log("screen " + screenW + " x " + screenH);
-      console.log("Player top " + getTopPlayerScore());
-      console.log("Player bottom " + (screenH - getTopPlayerScore()));
-    };
-
-    const startRound = () =>{
-
-    }
-
-    const clearSession = () =>{
-      sessionStorage.clear()
-      return location.reload()
-    }
 
 
     setDynmanicIncrement();
