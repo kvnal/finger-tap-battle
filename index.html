@@ -73,7 +73,9 @@
         transform: rotate(180deg);
       }
 
+
       .menu-container{
+        /* visibility: hidden; */
         height: 100vh;
         width: 100%;
         display: flex;
@@ -87,8 +89,9 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        
         border: 0.5em solid black;
+        border-right: 0;
+        border-left: 0;
         width: 100%;
         background-color: white;
         box-sizing: border-box;
@@ -97,11 +100,12 @@
 
       .menu h1{
         font-size: 3rem;
+        margin: 0.6em 0 0.2em 0;
       }
 
       .menu-controls button{
         padding: 0.5em;
-        margin:0  0.5em 0 0.5em;
+        margin: 3em  0.5em 0 0.5em;
         font-weight: 600;
         font-size: 0.8em;
         background-color: white;
@@ -113,14 +117,31 @@
         box-shadow: 2px 2px black;
       }
       
+      .timer{
+        position: absolute;
+        z-index: 101;
+        width: 10%;
+        background-color: black;
+        padding: 0 8px 0 8px;
+        text-align: center;
+      }
+      .timer span{
+        color: white;
+        font-size: 2em;
+      }
     </style>
   </head>
   <body>
+
+    <div class="timer">
+      <span id="timer">60</span>
+    </div>
     
     <div class="menu-container">
       
       <div class="menu">
         <h1 id="heading" class="">🤘 New Game 🤘</h2>
+          <span id="subHeading">red won by 10 taps / penalty for starting before time</span>
           <div class="menu-controls">
             <button onclick="startRound()">👊 Next Round </button>
             <button onclick="clearSession()">🤝 Reset </button>
@@ -151,6 +172,7 @@
 
     let increment;
     let beginGame = true;
+    let countDown;
 
     let topPlayerScore;
     let bottomPlayerScore;
@@ -171,11 +193,24 @@
     //stats display screen
     //emoji finger relative
     //countdown listner deactivate, penalty on early start
+    //alter rotate game menu (!winner) 
 
     const gameMenuVisiblity = (visible = true) =>{
       if(visible)
         return document.querySelector(".menubar-container").style.visibility = 'visible';
       return document.querySelector(".menubar-container").style.visibility = 'hidden';
+    }
+
+    const startCountdown=()=>{
+      let count = 30;
+      const heading = document.querySelector("#timer")
+      countDown = setInterval(() => {
+        heading.innerHTML = --count;
+        if(count == 0){
+          console.log("times up!!");
+          clearInterval(countDown);
+        }
+      }, 1000);
     }
     
     const setDynmanicIncrement = (percentOfH = 30)=>{
