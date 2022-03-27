@@ -150,13 +150,13 @@
 
     <div class="timer-container top50">
       <div class="timer ">
-        <span id="timer">60</span>
+        <span id="timer">Hello, Dev!</span>
       </div>
     </div>
     <!-- player top timer -->
     <div class="timer-container bottom50 rotate180">
       <div class="timer ">
-        <span id="timer">60</span>
+        <span id="timer">How are you?</span>
       </div>
     </div>
     
@@ -166,7 +166,7 @@
         <h1 id="heading" class="">🤘 New Game 🤘</h2>
           <span id="subHeading">red won by 10 taps / penalty for starting before time</span>
           <div class="menu-controls">
-            <button onclick="startRound()">👊 Play </button>
+            <button onclick="startGame(timer = true)">👊 Play </button>
             <button onclick="clearSession()">🤝 Reset </button>
           </div>
         </div>
@@ -194,7 +194,7 @@
     const screenW = document.body.scrollWidth;
 
     let increment;
-    let beginGame = true;
+    let beginGame = false;
     let countDown;
 
     let topPlayerScore;
@@ -241,16 +241,53 @@
       return heading.innerHTML = text;
     }
 
-    const startCountdown=()=>{
-      let count = 30;
-      const heading = document.querySelector("#timer")
+    const startCountdown = (timerValue = 30)=>{
+      let count = timerValue;
+      const timerSpan = document.querySelector("#timer")
       countDown = setInterval(() => {
-        heading.innerHTML = --count;
+        timerSpan.innerHTML = --count;
         if(count == 0){
           console.log("times up!!");
           clearInterval(countDown);
         }
       }, 1000);
+    }
+
+    const timerSpanValue = (value) =>{
+      const timerSpans = document.querySelectorAll("#timer");
+      timerSpans.forEach(element => {
+        element.innerHTML = value;
+      });
+    }
+
+    const startGame = (countDowntimer = true, matchTime = 30 ) =>{
+
+        timerSpanValue("3");
+        gameMenu(visibility = false);
+
+        let count =3;
+        const countDownInterval = setInterval(()=>{
+          
+          if(--count == 0){
+            if(!beginGame){
+                timerSpanValue("Tap 👆");
+                beginGame = true;
+                count = matchTime;
+              }
+            else{
+              // time up
+              timerSpanValue(0);
+              clearInterval(countDownInterval);
+              console.log("times up!!");
+              clearInterval(countDownInterval); 
+            }
+          }
+          else{
+            timerSpanValue(count);
+          }
+
+        },1000)
+      
     }
     
     const setDynmanicIncrement = (percentOfH = 30)=>{
@@ -332,21 +369,18 @@
     };
 
    
+    
+    
+    const clearSession = () =>{
+      sessionStorage.clear()
+      return location.reload()
+    }
+    
     const logStats = () => {
       console.log("screen " + screenW + " x " + screenH);
       console.log("Player top " + getTopPlayerScore());
       console.log("Player bottom " + (screenH - getTopPlayerScore()));
     };
-
-    const startRound = () =>{
-
-    }
-
-    const clearSession = () =>{
-      sessionStorage.clear()
-      return location.reload()
-    }
-
 
     // GAME
     topPlayerLayer.addEventListener("click", (event) => {
