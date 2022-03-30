@@ -129,7 +129,7 @@
       .timer-container{
         width: 100%;
         display: flex;
-        /* justify-content: center; */
+        justify-content: flex-end;
         position: absolute;
         z-index: 100;
         margin: auto;
@@ -241,18 +241,6 @@
       return heading.innerHTML = text;
     }
 
-    const startCountdown = (timerValue = 30)=>{
-      let count = timerValue;
-      const timerSpan = document.querySelector("#timer")
-      countDown = setInterval(() => {
-        timerSpan.innerHTML = --count;
-        if(count == 0){
-          console.log("times up!!");
-          clearInterval(countDown);
-        }
-      }, 1000);
-    }
-
     const timerSpanValue = (value) =>{
       const timerSpans = document.querySelectorAll("#timer");
       timerSpans.forEach(element => {
@@ -260,7 +248,7 @@
       });
     }
 
-    const startGame = (countDowntimer = true, matchTime = 30 ) =>{
+    const startGame = (countDowntimer = true, matchTime = 5 ) =>{
 
         timerSpanValue("3");
         gameMenu(visibility = false);
@@ -279,6 +267,7 @@
               timerSpanValue(0);
               clearInterval(countDownInterval);
               console.log("times up!!");
+              checkWinner(timesup = true);
               clearInterval(countDownInterval); 
             }
           }
@@ -290,7 +279,7 @@
       
     }
     
-    const setDynmanicIncrement = (percentOfH = 30)=>{
+    const setDynamicIncrement = (percentOfH = 5)=>{
       newStats.increment =  screenH * percentOfH * 0.01;
     }
     const getStats = () => {
@@ -348,6 +337,10 @@
     const getTopPlayerScore = () => {
       return parseFloat(window.getComputedStyle(topPlayer).height.match(/\d+/));
     };
+    
+    const getBottomPlayerScore = () => {
+      return parseFloat(screenH - getTopPlayerScore());
+    };
 
     const setTopPlayerScore = (increment) => {
       topPlayer.style.height =
@@ -356,16 +349,27 @@
           : "0px";
     };
 
-    const checkWinner = () => {
-      if (getTopPlayerScore() >= screenH) {
+    const checkWinner = (timesup = false) => {
+
+      if (getTopPlayerScore() >= screenH || (timesup && (getTopPlayerScore() >= getBottomPlayerScore()) )) {
+        logStats()
         console.log("Player Top winner!");
         updateStatsScore((topWinner = true));
+        gameMenu(visible = true ,topView180 = false);
+        beginGame = false;
+        return 0;
       }
       
-      if ((getTopPlayerScore() == 0 && (topPlayerTapCounts || bottomPlayerTapCounts))) {
+      if (((getTopPlayerScore() == 0 && (topPlayerTapCounts || bottomPlayerTapCounts))) 
+      || (timesup && (getTopPlayerScore() <= getBottomPlayerScore()) )) {
+        logStats()
         console.log("Player Bottom winner!");
         updateStatsScore((topWinner = false));
+        gameMenu(visible = true ,topView180 = true);
+        beginGame = false;
+        return 0;
       }
+
     };
 
    
@@ -379,7 +383,8 @@
     const logStats = () => {
       console.log("screen " + screenW + " x " + screenH);
       console.log("Player top " + getTopPlayerScore());
-      console.log("Player bottom " + (screenH - getTopPlayerScore()));
+      console.log("Player bottom " + (getBottomPlayerScore()));
+      console.log("\n");
     };
 
     // GAME
@@ -404,7 +409,7 @@
     });
 
 
-    setDynmanicIncrement();
+    setDynamicIncrement();
     newGame();
   </script>
 </html>
