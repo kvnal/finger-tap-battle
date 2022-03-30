@@ -144,6 +144,10 @@
         color: white;
         font-size: 2em;
       }
+      #subHeading{
+        text-align: center;
+        padding: 0 6px 0 6px;
+      }
     </style>
   </head>
   <body>
@@ -164,7 +168,7 @@
       
       <div class="menu">
         <h1 id="heading" class="">🤘 New Game 🤘</h2>
-          <span id="subHeading">red won by 10 taps / penalty for starting before time</span>
+          <span id="subHeading">Finger Tap Battle 🤺 </span>
           <div class="menu-controls">
             <button onclick="startGame(timer = true)">👊 Play </button>
             <button onclick="clearSession()">🤝 Reset </button>
@@ -225,6 +229,16 @@
       else
         menu.classList.remove("rotate180");
 
+      
+      if(!beginGame){
+        gameMenuHeading("✋ Penalty 👍", topView180 ? "red"  : "skyblue");
+        gameMenuSubHeading(`${topView180 ?  "Red"  : "Blue"} won a penalty point because ${!topView180 ?"Red" : "Blue"} began tapping before the countdown.`)
+      }
+      else{
+        gameMenuHeading(`${topView180 ? "Red Won!!"   : "Blue Won!!"}`, topView180  ? "red"  : "skyblue");
+        gameMenuSubHeading(`${topView180 ? "Red"  : "Blue"} won this round by ${Math.abs(topPlayerTapCounts - bottomPlayerTapCounts)} Taps.`)
+      }
+      
       if(visible)
         return menu.style.visibility = 'visible';
       return menu.style.visibility = 'hidden';
@@ -323,6 +337,8 @@
 
         updateStatsScoreUI(topPlayerScore = stats['top'] , bottomPlayerScore = stats['bottom']);
 
+        gameMenu(visible=true, topView180 = !topWinner);
+
         sessionStorage.setItem("stats", JSON.stringify(stats));
         return resetLayer();
       }
@@ -352,20 +368,16 @@
     const checkWinner = (timesup = false) => {
 
       if (getTopPlayerScore() >= screenH || (timesup && (getTopPlayerScore() >= getBottomPlayerScore()) )) {
-        logStats()
         console.log("Player Top winner!");
         updateStatsScore((topWinner = true));
-        gameMenu(visible = true ,topView180 = false);
         beginGame = false;
         return 0;
       }
       
       if (((getTopPlayerScore() == 0 && (topPlayerTapCounts || bottomPlayerTapCounts))) 
       || (timesup && (getTopPlayerScore() <= getBottomPlayerScore()) )) {
-        logStats()
         console.log("Player Bottom winner!");
         updateStatsScore((topWinner = false));
-        gameMenu(visible = true ,topView180 = true);
         beginGame = false;
         return 0;
       }
