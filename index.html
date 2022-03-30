@@ -29,7 +29,7 @@
         background-color: skyblue;
       }
 
-      /* listner layers */
+      /* listening layers */
       .layers {
         opacity: 1;
         /* background-color: black; */
@@ -57,14 +57,14 @@
         text-align: center;
         font-size: 8em;
         color: black;
-        -webkit-text-fill-color: white; /* Will override color (regardless of order) */
+        -webkit-text-fill-color: white;
         -webkit-text-stroke-width: 4px;
         -webkit-text-stroke-color: black;
       }
 
       .strokeText {
         color: black;
-        -webkit-text-fill-color: white; /* Will override color (regardless of order) */
+        -webkit-text-fill-color: white;
         -webkit-text-stroke-width: 2px;
         -webkit-text-stroke-color: black;
       }
@@ -228,7 +228,7 @@
       }
       else if(timesUp){
         //times up
-        gameMenuHeading(`${"Times Up ⏱"}`, topView180  ? "red"  : "skyblue");
+        gameMenuHeading(`${"Times Up!!"}`, topView180  ? "red"  : "skyblue");
         gameMenuSubHeading(`${topView180 ? "Red"  : "Blue"} tapped the screen ${ topView180? bottomPlayerTapCounts : topPlayerTapCounts} times.`)
       }
       else{
@@ -259,7 +259,7 @@
       });
     }
 
-    const startGame = (countDowntimer = true, matchTime = 5 ) =>{
+    const startGame = (countDowntimer = true, matchTime = 15 ) =>{
 
         timerSpanValue("3");
         gameMenu(visibility = false);
@@ -276,7 +276,7 @@
             else{
               // time up
               timerSpanValue(0);
-              console.log("times up!!");
+              // console.log("times up!!");
               timesUp = true;
               checkWinner(timesup = true);
               clearInterval(countDownInterval); 
@@ -366,7 +366,7 @@
     const checkWinner = (timesup = false) => {
 
       if (getTopPlayerScore() >= screenH || (timesup && (getTopPlayerScore() >= getBottomPlayerScore()) )) {
-        console.log("Player Top winner!");
+        // console.log("Player Top winner!");
         updateStatsScore((topWinner = true));
         beginGame = false;
         timesUp = false;
@@ -375,7 +375,7 @@
       
       if (((getTopPlayerScore() == 0 && (topPlayerTapCounts || bottomPlayerTapCounts))) 
       || (timesup && (getTopPlayerScore() <= getBottomPlayerScore()) )) {
-        console.log("Player Bottom winner!");
+        // console.log("Player Bottom winner!");
         updateStatsScore((topWinner = false));
         beginGame = false;
         timesUp = false;
@@ -383,8 +383,6 @@
       }
 
     };
-
-   
     
     
     const clearSession = () =>{
@@ -393,10 +391,10 @@
     }
     
     const logStats = () => {
-      console.log("screen " + screenW + " x " + screenH);
-      console.log("Player top " + getTopPlayerScore());
-      console.log("Player bottom " + (getBottomPlayerScore()));
-      console.log("\n");
+      console.log("screen : " + screenW + " x " + screenH);
+      console.log("Player top : " + getTopPlayerScore());
+      console.log("Player bottom : " + (getBottomPlayerScore()));
+      console.log("Session Stats  : " + JSON.stringify(getStats()));
     };
 
     // GAME
