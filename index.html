@@ -188,6 +188,22 @@
   </body>
 
   <script>
+    //full screen
+    var elem = document.body;
+
+/* View in fullscreen */
+function openFullscreen() {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE11 */
+    elem.msRequestFullscreen();
+  }
+}
+  </script>
+    
+  <script>
     const newStats = {
       top: 0,
       bottom: 0,
@@ -211,8 +227,11 @@
     let topPlayer = document.querySelector(".playerTop");
     let bottomPlayer = document.querySelector(".playerBottom");
 
+    //equal listening layers
     let topPlayerLayer = document.querySelector(".playerTopLayer");
     let bottomPlayerLayer = document.querySelector(".playerBottomLayer");
+
+    
 
     const gameMenu = (visible = true , topView180 = false) =>{
       const menu =document.querySelector(".menu-container");
@@ -259,7 +278,8 @@
       });
     }
 
-    const startGame = (countDowntimer = true, matchTime = 15 ) =>{
+    const startGame = (countDowntimer = true, matchTime = 1000 ) =>{
+        openFullscreen();
 
         timerSpanValue("3");
         gameMenu(visibility = false);
