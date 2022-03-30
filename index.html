@@ -199,7 +199,8 @@
 
     let increment;
     let beginGame = false;
-    let countDown;
+    let timesUp = false;
+    let countDownInterval;
 
     let topPlayerScore;
     let bottomPlayerScore;
@@ -213,15 +214,6 @@
     let topPlayerLayer = document.querySelector(".playerTopLayer");
     let bottomPlayerLayer = document.querySelector(".playerBottomLayer");
 
-    //click opacity 0 ,restart , mode (L,M,D) increments => game
-    // dynamic increment 5%
-    //rounds localstorage, reset , increments, timer 30s , count
-    //check winner
-    //stats display screen
-    //emoji finger relative
-    //countdown listner deactivate, penalty on early start
-    //alter rotate game menu (!winner) 
-
     const gameMenu = (visible = true , topView180 = false) =>{
       const menu =document.querySelector(".menu-container");
       if(topView180)
@@ -234,9 +226,14 @@
         gameMenuHeading("✋ Penalty 👍", topView180 ? "red"  : "skyblue");
         gameMenuSubHeading(`${topView180 ?  "Red"  : "Blue"} won a penalty point because ${!topView180 ?"Red" : "Blue"} began tapping before the countdown.`)
       }
+      else if(timesUp){
+        //times up
+        gameMenuHeading(`${"Times Up ⏱"}`, topView180  ? "red"  : "skyblue");
+        gameMenuSubHeading(`${topView180 ? "Red"  : "Blue"} tapped the screen ${ topView180? bottomPlayerTapCounts : topPlayerTapCounts} times.`)
+      }
       else{
         gameMenuHeading(`${topView180 ? "Red Won!!"   : "Blue Won!!"}`, topView180  ? "red"  : "skyblue");
-        gameMenuSubHeading(`${topView180 ? "Red"  : "Blue"} won this round by ${Math.abs(topPlayerTapCounts - bottomPlayerTapCounts)} Taps.`)
+        gameMenuSubHeading(`${topView180 ? "Red"  : "Blue"} tapped the screen ${ topView180? bottomPlayerTapCounts : topPlayerTapCounts} times.`)
       }
       
       if(visible)
@@ -268,7 +265,7 @@
         gameMenu(visibility = false);
 
         let count =3;
-        const countDownInterval = setInterval(()=>{
+        countDownInterval = setInterval(()=>{
           
           if(--count == 0){
             if(!beginGame){
@@ -279,8 +276,8 @@
             else{
               // time up
               timerSpanValue(0);
-              clearInterval(countDownInterval);
               console.log("times up!!");
+              timesUp = true;
               checkWinner(timesup = true);
               clearInterval(countDownInterval); 
             }
@@ -329,9 +326,10 @@
     };
 
     const updateStatsScore = (topWinner) => {
-      if (getStats()) {
-        let stats = getStats();
-
+      let stats = getStats();
+      if (stats) {
+        clearInterval(countDownInterval);
+        
         if (topWinner) stats["top"] += 1;
         else stats["bottom"] += 1;
 
@@ -371,6 +369,7 @@
         console.log("Player Top winner!");
         updateStatsScore((topWinner = true));
         beginGame = false;
+        timesUp = false;
         return 0;
       }
       
@@ -379,6 +378,7 @@
         console.log("Player Bottom winner!");
         updateStatsScore((topWinner = false));
         beginGame = false;
+        timesUp = false;
         return 0;
       }
 
