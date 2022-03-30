@@ -148,6 +148,15 @@
         text-align: center;
         padding: 0 6px 0 6px;
       }
+      .midLine{
+        margin: 0;
+        z-index: 102;
+        border-top: 4px white dashed ;
+        position: absolute;
+        width: 100%;
+        top: 50vh;
+        box-sizing: border-box;
+      }
     </style>
   </head>
   <body>
@@ -175,6 +184,9 @@
           </div>
         </div>
     </div>
+
+    <hr class="midLine">
+
     <div class="layers">
       <div class="playerTopLayer">
         <span class="textlg" id="topPlayerScore">0</span>
@@ -231,6 +243,9 @@ function openFullscreen() {
     let topPlayerLayer = document.querySelector(".playerTopLayer");
     let bottomPlayerLayer = document.querySelector(".playerBottomLayer");
 
+    //layers
+    let layerContainer = document.querySelector(".layers");
+
     
 
     const gameMenu = (visible = true , topView180 = false) =>{
@@ -278,8 +293,13 @@ function openFullscreen() {
       });
     }
 
-    const startGame = (countDowntimer = true, matchTime = 1000 ) =>{
+    const layerContainerVisiblity = (visible = true)=>{
+      return layerContainer.style.visibility =  visible ?  "visible" : "hidden";
+    }
+    const startGame = (countDowntimer = true, matchTime = 5 ) =>{
         openFullscreen();
+
+        layerContainerVisiblity(false);
 
         timerSpanValue("3");
         gameMenu(visibility = false);
@@ -356,6 +376,7 @@ function openFullscreen() {
         updateStatsScoreUI(topPlayerScore = stats['top'] , bottomPlayerScore = stats['bottom']);
 
         gameMenu(visible=true, topView180 = !topWinner);
+        layerContainerVisiblity(visible= true);
 
         sessionStorage.setItem("stats", JSON.stringify(stats));
         return resetLayer();
@@ -418,7 +439,7 @@ function openFullscreen() {
     };
 
     // GAME
-    topPlayerLayer.addEventListener("click", (event) => {
+    topPlayer.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
 
@@ -430,7 +451,7 @@ function openFullscreen() {
       }
     });
 
-    bottomPlayerLayer.addEventListener("click", (event) => {
+    bottomPlayer.addEventListener("click", (event) => {
       if (!beginGame) updateStatsScore((topWinner = true));
       else{
       bottomPlayerTapCounts++;
